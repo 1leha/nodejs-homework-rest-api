@@ -1,40 +1,34 @@
 const express = require("express");
 const {
-  listContacts,
-  getContactById,
-  // removeContact,
-  // addContact,
-  // updateContact,
-} = require("../../models/contacts");
+  getContactsController,
+  getContactByIdController,
+  addContactController,
+  deleteContactController,
+  putContactController,
+} = require("../../controllers/contactsControllers");
+
+const {
+  validatedContactOnPost,
+  validatedContactOnPut,
+} = require("../../utils");
+const { isContactExist, isEmptyBody } = require("../../middlewares");
 
 const router = express.Router();
 
-router.get("/", async (req, res, next) => {
-  const contacts = await listContacts();
-  res.status(200).send(contacts);
-});
+router.get("/", getContactsController);
 
-router.get("/:contactId", async (req, res, next) => {
-  const contactId = +req.params.contactId;
-  const contact = await getContactById(contactId);
+router.get("/:contactId", isContactExist, getContactByIdController);
 
-  if (!contact) {
-    return res.status(404).json({ message: "Not found" });
-  }
+router.post("/", validatedContactOnPost, addContactController);
 
-  res.status(200).send(contact);
-});
+router.delete("/:contactId", isContactExist, deleteContactController);
 
-router.post("/", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
-
-router.delete("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
-
-router.put("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
-});
+router.put(
+  "/:contactId",
+  isContactExist,
+  isEmptyBody,
+  validatedContactOnPut,
+  putContactController
+);
 
 module.exports = router;
