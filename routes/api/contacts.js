@@ -1,25 +1,34 @@
-const express = require('express')
+const express = require("express");
+const {
+  getContactsController,
+  getContactByIdController,
+  addContactController,
+  deleteContactController,
+  putContactController,
+} = require("../../controllers/contactsControllers");
 
-const router = express.Router()
+const {
+  validatedContactOnPost,
+  validatedContactOnPut,
+} = require("../../utils");
+const { isContactExist, isEmptyBody } = require("../../middlewares");
 
-router.get('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+const router = express.Router();
 
-router.get('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/", getContactsController);
 
-router.post('/', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.get("/:contactId", isContactExist, getContactByIdController);
 
-router.delete('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.post("/", validatedContactOnPost, addContactController);
 
-router.put('/:contactId', async (req, res, next) => {
-  res.json({ message: 'template message' })
-})
+router.delete("/:contactId", isContactExist, deleteContactController);
 
-module.exports = router
+router.put(
+  "/:contactId",
+  isContactExist,
+  isEmptyBody,
+  validatedContactOnPut,
+  putContactController
+);
+
+module.exports = router;
