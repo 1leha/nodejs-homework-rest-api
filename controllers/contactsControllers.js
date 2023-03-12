@@ -7,7 +7,7 @@ const {
 } = require("../models/contacts");
 
 const getContactsController = async (req, res, next) => {
-  const contacts = await listContacts();
+  const contacts = JSON.parse(await listContacts());
   res.status(200).send(contacts);
 };
 

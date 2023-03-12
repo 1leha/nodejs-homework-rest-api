@@ -8,7 +8,11 @@ const validatedContactOnPost = (req, res, next) => {
   }).validate(req.body);
 
   if (error) {
-    return res.status(400).json({ message: "Missing required name field!" });
+    const errorField = error.details[0].context.key;
+
+    return res
+      .status(400)
+      .json({ message: `Missing required ${errorField} field!` });
   }
 
   next();
