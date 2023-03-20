@@ -12,6 +12,7 @@ const {
   isEmptyBody,
   validatedContactOnPut,
   validatedContactOnPost,
+  isContactExist,
 } = require("../../middlewares");
 const { isValidId } = require("../../middlewares/isValidId");
 const {
@@ -25,11 +26,12 @@ router
   .post("/", validatedContactOnPost, addContactController);
 
 router
-  .get("/:contactId", isValidId, getContactByIdController)
-  .delete("/:contactId", isValidId, deleteContactController)
+  .get("/:contactId", isValidId, isContactExist, getContactByIdController)
+  .delete("/:contactId", isValidId, isContactExist, deleteContactController)
   .put(
     "/:contactId",
     isValidId,
+    isContactExist,
     isEmptyBody,
     validatedContactOnPut,
     putContactController

@@ -35,6 +35,7 @@ const validatedContactOnPut = (req, res, next) => {
   }).validate(req.body);
 
   if (error) {
+    console.log("error :>> ", error);
     return res.status(400).json({ message: "Error in the field content!" });
   }
 
