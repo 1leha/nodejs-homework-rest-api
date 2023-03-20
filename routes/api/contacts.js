@@ -8,27 +8,29 @@ const {
 } = require("../../controllers/contactsControllers");
 
 const {
-  validatedContactOnPost,
+  isEmptyBody,
   validatedContactOnPut,
-} = require("../../utils");
-const { isContactExist, isEmptyBody } = require("../../middlewares");
+  validatedContactOnPost,
+} = require("../../middlewares");
+const { isValidId } = require("../../middlewares/isValidId");
 
 const router = express.Router();
 
-router.get("/", getContactsController);
+router
+  .get("/", getContactsController)
+  .post("/", validatedContactOnPost, addContactController);
 
-router.get("/:contactId", isContactExist, getContactByIdController);
+router
+  .get("/:contactId", isValidId, getContactByIdController)
+  .delete("/:contactId", isValidId, deleteContactController)
+  .put(
+    "/:contactId",
+    isValidId,
+    isEmptyBody,
+    validatedContactOnPut,
+    putContactController
+  );
 
-router.post("/", validatedContactOnPost, addContactController);
-
-router.delete("/:contactId", isContactExist, deleteContactController);
-
-router.put(
-  "/:contactId",
-  isContactExist,
-  isEmptyBody,
-  validatedContactOnPut,
-  putContactController
-);
+router.patch("/api/contacts/:contactId/favorite", () => {});
 
 module.exports = router;

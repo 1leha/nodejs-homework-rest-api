@@ -7,34 +7,59 @@ const {
 } = require("../models/contacts");
 
 const getContactsController = async (req, res, next) => {
-  const contacts = JSON.parse(await listContacts());
-  res.status(200).send(contacts);
+  try {
+    const contacts = await listContacts();
+    res.status(200).send(contacts);
+  } catch (error) {
+    console.log("error :>> ", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const getContactByIdController = async (req, res, next) => {
-  const contactId = +req.params.contactId;
-  const contact = await getContactById(contactId);
+  try {
+    const contactId = req.params.contactId;
+    const contact = await getContactById(contactId);
 
-  res.status(200).send(contact);
+    res.status(200).json(contact);
+  } catch (error) {
+    console.log("error :>> ", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const addContactController = async (req, res, next) => {
-  const newContact = await addContact(req.body);
-  res.status(201).json(newContact);
+  try {
+    const newContact = await addContact(req.body);
+    res.status(201).json(newContact);
+  } catch (error) {
+    console.log("error :>> ", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const deleteContactController = async (req, res, next) => {
-  const contactId = +req.params.contactId;
-  await removeContact(contactId);
+  try {
+    const contactId = req.params.contactId;
+    await removeContact(contactId);
 
-  res.status(200).json({ message: "contact deleted" });
+    res.status(204);
+  } catch (error) {
+    console.log("error :>> ", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 const putContactController = async (req, res, next) => {
-  const contactId = +req.params.contactId;
-  const updatedContact = await updateContact(contactId, req.body);
+  try {
+    const contactId = req.params.contactId;
+    const updatedContact = await updateContact(contactId, req.body);
 
-  res.status(200).json(updatedContact);
+    res.status(200).json(updatedContact);
+  } catch (error) {
+    console.log("error :>> ", error);
+    res.status(500).json({ message: "Server error" });
+  }
 };
 
 module.exports = {
