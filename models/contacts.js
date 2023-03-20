@@ -17,30 +17,11 @@ const addContact = async (body) => {
 };
 
 const updateContact = async (contactId, body) => {
-  console.log("updateContact contactId :>> ", contactId);
-  console.log("updateContact body :>> ", body);
-
   return await Contacts.updateOne({ contactId, ...body });
+};
 
-  // const contacts = JSON.parse(await readFile({ path: dbPath }));
-  // const { name, email, phone } = body;
-  // contacts.forEach((contact) => {
-  //   if (+contact.id === contactId) {
-  //     if (name) {
-  //       contact.name = name;
-  //     }
-  //     if (email) {
-  //       contact.email = email;
-  //     }
-  //     if (phone) {
-  //       contact.phone = phone;
-  //     }
-  //   }
-  //   return contact;
-  // });
-  // const updatedContact = contacts.find((contact) => +contact.id === contactId);
-  // await writeFile({ path: dbPath, data: contacts });
-  // return updatedContact;
+const updateStatusContact = async (contactId, body) => {
+  return await Contacts.updateOne({ contactId, ...body });
 };
 
 module.exports = {
@@ -49,4 +30,5 @@ module.exports = {
   removeContact,
   addContact,
   updateContact,
+  updateStatusContact,
 };

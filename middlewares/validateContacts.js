@@ -43,4 +43,22 @@ const validatedContactOnPut = (req, res, next) => {
   next();
 };
 
-module.exports = { validatedContactOnPost, validatedContactOnPut };
+const validatedContactOnPatch = (req, res, next) => {
+  const { error, value } = Joi.object({
+    favorite: Joi.boolean().required(),
+  }).validate(req.body);
+
+  if (error) {
+    return res.status(400).json({ message: "missing field favorite" });
+  }
+
+  req.body = value;
+
+  next();
+};
+
+module.exports = {
+  validatedContactOnPost,
+  validatedContactOnPut,
+  validatedContactOnPatch,
+};

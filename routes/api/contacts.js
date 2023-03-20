@@ -5,6 +5,7 @@ const {
   addContactController,
   deleteContactController,
   putContactController,
+  updateStatusContactController,
 } = require("../../controllers/contactsControllers");
 
 const {
@@ -13,6 +14,9 @@ const {
   validatedContactOnPost,
 } = require("../../middlewares");
 const { isValidId } = require("../../middlewares/isValidId");
+const {
+  validatedContactOnPatch,
+} = require("../../middlewares/validateContacts");
 
 const router = express.Router();
 
@@ -31,6 +35,11 @@ router
     putContactController
   );
 
-router.patch("/api/contacts/:contactId/favorite", () => {});
+router.patch(
+  "/:contactId/favorite",
+  isValidId,
+  validatedContactOnPatch,
+  updateStatusContactController
+);
 
 module.exports = router;
