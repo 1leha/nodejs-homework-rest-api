@@ -17,11 +17,11 @@ const addContact = async (body) => {
 };
 
 const updateContact = async (contactId, body) => {
-  return await Contacts.updateOne({ contactId, ...body });
+  return await Contacts.findByIdAndUpdate(contactId, body, { new: true });
 };
 
 const updateStatusContact = async (contactId, body) => {
-  return await Contacts.updateOne({ contactId, ...body });
+  return await Contacts.findByIdAndUpdate(contactId, body, { new: true });
 };
 
 module.exports = {
