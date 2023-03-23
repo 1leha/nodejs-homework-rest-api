@@ -5,30 +5,43 @@ const {
   addContactController,
   deleteContactController,
   putContactController,
+  updateStatusContactController,
 } = require("../../controllers/contactsControllers");
 
 const {
-  validatedContactOnPost,
+  isEmptyBody,
   validatedContactOnPut,
-} = require("../../utils");
-const { isContactExist, isEmptyBody } = require("../../middlewares");
+  validatedContactOnPost,
+  isContactExist,
+} = require("../../middlewares");
+const { isValidId } = require("../../middlewares/isValidId");
+const {
+  validatedContactOnPatch,
+} = require("../../middlewares/validateContacts");
 
 const router = express.Router();
 
-router.get("/", getContactsController);
+router
+  .get("/", getContactsController)
+  .post("/", validatedContactOnPost, addContactController);
 
-router.get("/:contactId", isContactExist, getContactByIdController);
+router
+  .get("/:contactId", isValidId, isContactExist, getContactByIdController)
+  .delete("/:contactId", isValidId, isContactExist, deleteContactController)
+  .put(
+    "/:contactId",
+    isValidId,
+    isContactExist,
+    isEmptyBody,
+    validatedContactOnPut,
+    putContactController
+  );
 
-router.post("/", validatedContactOnPost, addContactController);
-
-router.delete("/:contactId", isContactExist, deleteContactController);
-
-router.put(
-  "/:contactId",
-  isContactExist,
-  isEmptyBody,
-  validatedContactOnPut,
-  putContactController
+router.patch(
+  "/:contactId/favorite",
+  isValidId,
+  validatedContactOnPatch,
+  updateStatusContactController
 );
 
 module.exports = router;
