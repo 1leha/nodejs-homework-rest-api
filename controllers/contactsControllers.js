@@ -6,74 +6,52 @@ const {
   updateContact,
   updateStatusContact,
 } = require("../models/contacts");
+const { asynWrapper } = require("../utils/asyncWrapper");
 
-const getContactsController = async (req, res, next) => {
-  try {
-    const contacts = await listContacts();
-    res.status(200).send(contacts);
-  } catch (error) {
-    console.log("error :>> ", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+const getContactsController = asynWrapper(async (req, res, next) => {
+  const ownerId = req.user.id;
 
-const getContactByIdController = async (req, res, next) => {
-  try {
-    const contactId = req.params.contactId;
-    const contact = await getContactById(contactId);
+  const contacts = await listContacts(ownerId);
+  res.status(200).send(contacts);
+});
 
-    res.status(200).json(contact);
-  } catch (error) {
-    console.log("error :>> ", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+const getContactByIdController = asynWrapper(async (req, res, next) => {
+  const contactId = req.params.contactId;
+  const contact = await getContactById(contactId);
 
-const addContactController = async (req, res, next) => {
-  try {
-    const newContact = await addContact(req.body);
-    res.status(201).json(newContact);
-  } catch (error) {
-    console.log("error :>> ", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+  res.status(200).json(contact);
+});
 
-const deleteContactController = async (req, res, next) => {
-  try {
-    const contactId = req.params.contactId;
+const addContactController = asynWrapper(async (req, res, next) => {
+  const newContactData = {
+    ...req.body,
+    owner: req.user.id,
+  };
 
-    await removeContact(contactId);
+  const newContact = await addContact(newContactData);
+  res.status(201).json(newContact);
+});
 
-    res.status(204).send();
-  } catch (error) {
-    console.log("error :>> ", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+const deleteContactController = asynWrapper(async (req, res, next) => {
+  const contactId = req.params.contactId;
 
-const putContactController = async (req, res, next) => {
-  try {
-    const contactId = req.params.contactId;
-    const updatedContact = await updateContact(contactId, req.body);
+  await removeContact(contactId);
 
-    res.status(200).json(updatedContact);
-  } catch (error) {
-    console.log("error :>> ", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+  res.status(204).send();
+});
 
-const updateStatusContactController = async (req, res, next) => {
-  try {
-    const contactId = req.params.contactId;
-    const updatedContact = await updateStatusContact(contactId, req.body);
-    res.status(200).json(updatedContact);
-  } catch (error) {
-    console.log("error :>> ", error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+const putContactController = asynWrapper(async (req, res, next) => {
+  const contactId = req.params.contactId;
+  const updatedContact = await updateContact(contactId, req.body);
+
+  res.status(200).json(updatedContact);
+});
+
+const updateStatusContactController = asynWrapper(async (req, res, next) => {
+  const contactId = req.params.contactId;
+  const updatedContact = await updateStatusContact(contactId, req.body);
+  res.status(200).json(updatedContact);
+});
 
 module.exports = {
   getContactsController,

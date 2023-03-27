@@ -3,8 +3,15 @@ const { decodeToken } = require("../sevices/token");
 const { NotAuthorisedError } = require("../utils/errors");
 
 exports.authMiddlware = async (req, res, next) => {
-  const [tokenType, token] = req.headers.authorization.split(" ");
-  if (!token) {
+  const isToken = req.headers?.authorization;
+
+  if (!isToken) {
+    next(new NotAuthorisedError("Not authorized"));
+  }
+
+  const [tokenType, token] = req.headers?.authorization.split(" ");
+
+  if (tokenType !== "Bearer") {
     next(new NotAuthorisedError("Not authorized"));
   }
 
@@ -25,7 +32,6 @@ exports.authMiddlware = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log("error :>> ", error);
     next(new NotAuthorisedError("Not authorized"));
   }
 };
