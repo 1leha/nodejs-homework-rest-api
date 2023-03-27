@@ -42,4 +42,8 @@ const logoutUser = async (id) => {
   );
 };
 
-module.exports = { registerUser, loginUser, logoutUser };
+const getCurrentUser = async (id) => {
+  return await User.findById({ _id: id });
+};
+
+module.exports = { registerUser, loginUser, logoutUser, getCurrentUser };

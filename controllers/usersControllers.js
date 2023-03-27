@@ -1,4 +1,9 @@
-const { registerUser, loginUser, logoutUser } = require("../models/users");
+const {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+} = require("../models/users");
 const { asynWrapper } = require("../utils/asyncWrapper");
 
 const registerController = asynWrapper(async (req, res, next) => {
@@ -29,4 +34,20 @@ const logoutController = asynWrapper(async (req, res, next) => {
   res.status(204).end();
 });
 
-module.exports = { registerController, loginController, logoutController };
+const getCurrentUserController = asynWrapper(async (req, res, next) => {
+  const { id } = req.user;
+
+  const { email, subscription } = await getCurrentUser(id);
+
+  res.status(200).json({
+    email,
+    subscription,
+  });
+});
+
+module.exports = {
+  registerController,
+  loginController,
+  logoutController,
+  getCurrentUserController,
+};
