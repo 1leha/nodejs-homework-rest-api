@@ -3,6 +3,7 @@ const {
   loginUser,
   logoutUser,
   getCurrentUser,
+  updateSubscription,
 } = require("../models/users");
 const { asynWrapper } = require("../utils/asyncWrapper");
 
@@ -45,9 +46,24 @@ const getCurrentUserController = asynWrapper(async (req, res, next) => {
   });
 });
 
+const updateUsersSubscriptionController = asynWrapper(
+  async (req, res, next) => {
+    const { id } = req.user;
+    const { subscription } = req.body;
+
+    const updatedUser = await updateSubscription(id, subscription);
+
+    res.status(200).json({
+      email: updatedUser.email,
+      subscription: updatedUser.subscription,
+    });
+  }
+);
+
 module.exports = {
   registerController,
   loginController,
   logoutController,
   getCurrentUserController,
+  updateUsersSubscriptionController,
 };

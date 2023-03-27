@@ -10,8 +10,9 @@ const { asynWrapper } = require("../utils/asyncWrapper");
 
 const getContactsController = asynWrapper(async (req, res, next) => {
   const ownerId = req.user.id;
+  const queryString = req.query;
 
-  const contacts = await listContacts(ownerId);
+  const contacts = await listContacts(ownerId, queryString);
   res.status(200).send(contacts);
 });
 

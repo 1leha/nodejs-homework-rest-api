@@ -46,4 +46,14 @@ const getCurrentUser = async (id) => {
   return await User.findById({ _id: id });
 };
 
-module.exports = { registerUser, loginUser, logoutUser, getCurrentUser };
+const updateSubscription = async (id, subscription) => {
+  return await User.findByIdAndUpdate(id, subscription, { new: true });
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+  updateSubscription,
+};

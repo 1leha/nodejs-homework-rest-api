@@ -39,7 +39,25 @@ const validatedUserOnLogin = async (req, res, next) => {
   next();
 };
 
+const validatedUsersSubscription = async (req, res, next) => {
+  const { error, value } = Joi.object({
+    subscription: Joi.string().valid("starter", "pro", "business"),
+  }).validate(req.body);
+
+  if (error) {
+    return next(
+      new BadRequestError(
+        `Subscription must be only "starter", "pro", "business"`
+      )
+    );
+  }
+
+  req.body = value;
+  next();
+};
+
 module.exports = {
   validatedUserOnRegister,
   validatedUserOnLogin,
+  validatedUsersSubscription,
 };

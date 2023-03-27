@@ -6,10 +6,10 @@ exports.authMiddlware = async (req, res, next) => {
   const isToken = req.headers?.authorization;
 
   if (!isToken) {
-    next(new NotAuthorisedError("Not authorized"));
+    return next(new NotAuthorisedError("Not authorized"));
   }
 
-  const [tokenType, token] = req.headers?.authorization.split(" ");
+  const [tokenType, token] = req.headers.authorization.split(" ");
 
   if (tokenType !== "Bearer") {
     next(new NotAuthorisedError("Not authorized"));
