@@ -5,6 +5,13 @@ class BadRequestError extends Error {
   }
 }
 
+class NotImageError extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 400;
+  }
+}
+
 class NotAuthorisedError extends Error {
   constructor(message) {
     super(message);
@@ -19,4 +26,9 @@ class EmailInUseError extends Error {
   }
 }
 
-module.exports = { BadRequestError, NotAuthorisedError, EmailInUseError };
+module.exports = {
+  BadRequestError,
+  NotAuthorisedError,
+  EmailInUseError,
+  NotImageError,
+};
