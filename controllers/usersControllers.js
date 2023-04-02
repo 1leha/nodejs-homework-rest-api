@@ -23,6 +23,7 @@ const loginController = asynWrapper(async (req, res) => {
   const { email, password } = req.body;
 
   const user = await loginUser(email, password);
+
   res.status(200).json({
     token: user.token,
     user: { email: user.email, subscription: user.subscription },
