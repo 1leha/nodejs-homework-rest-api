@@ -8,8 +8,13 @@ const Jimp = require("jimp");
 const { avatarFileSize } = require("../constants/uploadLimits");
 const { NotImageError } = require("../utils/errors");
 const { avatarSettings } = require("../constants/avatarSettings");
+const { createTmpDir } = require("../utils/createTmpDir");
 
 const tmpDir = path.join(process.cwd(), process.env.TMP_PATH);
+
+// creating tmpDir if it is not exists
+createTmpDir(tmpDir);
+
 const avatarDir = path.join(
   process.cwd(),
   process.env.PUBLIC_PATH,

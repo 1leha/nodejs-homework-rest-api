@@ -7,7 +7,7 @@ const {
   logoutController,
   getCurrentUserController,
   updateUsersSubscriptionController,
-  updateUserAvatarController
+  updateUserAvatarController,
 } = require("../../controllers/usersControllers");
 const { authMiddlware } = require("../../middlewares/authMiddleware");
 const { uploadAvatar } = require("../../middlewares/uploadAvatar");
