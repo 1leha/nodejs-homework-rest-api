@@ -4,11 +4,12 @@ const { signToken } = require("../sevices/token");
 const { NotAuthorisedError } = require("../utils/errors");
 const { User } = require("./usersModel");
 
-const registerUser = async (email, password, subscription) => {
+const registerUser = async (email, password, subscription, avatarURL) => {
   const newUser = new User({
     email,
     password,
     subscription,
+    avatarURL,
   });
 
   return await newUser.save();
@@ -50,10 +51,16 @@ const updateSubscription = async (id, subscription) => {
   return await User.findByIdAndUpdate(id, subscription, { new: true });
 };
 
+const updateAvatar = async (id, avatarURL) => {
+  console.log("id :>> ", id);
+  return await User.findByIdAndUpdate(id, { avatarURL }, { new: true });
+};
+
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   getCurrentUser,
   updateSubscription,
+  updateAvatar,
 };

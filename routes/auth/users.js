@@ -7,8 +7,10 @@ const {
   logoutController,
   getCurrentUserController,
   updateUsersSubscriptionController,
+  updateUserAvatarController,
 } = require("../../controllers/usersControllers");
 const { authMiddlware } = require("../../middlewares/authMiddleware");
+const { uploadAvatar } = require("../../middlewares/uploadAvatar");
 
 const {
   validatedUserOnRegister,
@@ -25,6 +27,12 @@ router.patch(
   authMiddlware,
   validatedUsersSubscription,
   updateUsersSubscriptionController
+);
+router.patch(
+  "/users/avatars",
+  authMiddlware,
+  uploadAvatar,
+  updateUserAvatarController
 );
 
 module.exports = router;
