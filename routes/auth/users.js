@@ -38,5 +38,6 @@ router.patch(
 
 // verify mail
 router.get("/users/verify/:verificationToken", verifyTokenController);
+// router.post("/users/verify", verifyUserController);
 
 module.exports = router;

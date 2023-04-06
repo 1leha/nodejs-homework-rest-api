@@ -26,6 +26,12 @@ const loginUser = async (email, password) => {
     throw new NotAuthorisedError("Email or password is wrong");
   }
 
+  if (!user.verify) {
+    throw new NotAuthorisedError(
+      "You are not authorized to login this site! Check your e-mail and follow the link to complete your registration!"
+    );
+  }
+
   const token = signToken(user._id);
 
   return await User.findByIdAndUpdate(

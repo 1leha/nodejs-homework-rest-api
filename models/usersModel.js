@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const gravatar = require("gravatar");
+const { v4: uuid } = require("uuid");
 
 const Schema = mongoose.Schema;
 
@@ -30,8 +31,7 @@ const usersSchema = new Schema({
   },
   verificationToken: {
     type: String,
-    default: "13",
-    // required: [true, "Verify token is required"],
+    required: [false, "Verify token is required"],
   },
 });
 
@@ -44,6 +44,8 @@ usersSchema.pre("save", async function () {
       s: 250,
       protocol: "https",
     });
+
+    this.verificationToken = uuid();
   }
 });
 

@@ -19,7 +19,7 @@ const validatedUserOnRegister = async (req, res, next) => {
   if (isUserExist) {
     return next(new EmailInUseError("Email in use"));
   }
-
+  console.log("value :>> ", value);
   req.body = value;
   next();
 };
