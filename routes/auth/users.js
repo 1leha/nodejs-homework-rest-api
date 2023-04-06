@@ -8,6 +8,7 @@ const {
   getCurrentUserController,
   updateUsersSubscriptionController,
   updateUserAvatarController,
+  verifyTokenController,
 } = require("../../controllers/usersControllers");
 const { authMiddlware } = require("../../middlewares/authMiddleware");
 const { uploadAvatar } = require("../../middlewares/uploadAvatar");
@@ -34,5 +35,8 @@ router.patch(
   uploadAvatar,
   updateUserAvatarController
 );
+
+// verify mail
+router.get("/users/verify/:verificationToken", verifyTokenController);
 
 module.exports = router;

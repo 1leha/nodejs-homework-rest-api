@@ -5,9 +5,12 @@ const {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  verifyToken,
 } = require("../models/users");
+
 const ImagesAPI = require("../sevices/imageUpload");
 const { asynWrapper } = require("../utils/asyncWrapper");
+const { NotFound } = require("../utils/errors");
 
 const registerController = asynWrapper(async (req, res) => {
   const { email, password, subscription, avatarURL } = req.body;
@@ -77,6 +80,20 @@ const updateUserAvatarController = asynWrapper(async (req, res) => {
   });
 });
 
+const verifyTokenController = asynWrapper(async (req, res) => {
+  const { verificationToken } = req.params;
+
+  const verificationResult = await verifyToken(verificationToken);
+
+  if (!verificationResult) {
+    throw new NotFound("User not found");
+  }
+
+  res.status(200).json({
+    message: "Verification successful",
+  });
+});
+
 module.exports = {
   registerController,
   loginController,
@@ -84,4 +101,5 @@ module.exports = {
   getCurrentUserController,
   updateUsersSubscriptionController,
   updateUserAvatarController,
+  verifyTokenController,
 };
