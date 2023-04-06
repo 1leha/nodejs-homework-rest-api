@@ -69,6 +69,10 @@ const verifyToken = async (token) => {
   );
 };
 
+const sendToken = async (email) => {
+  return await User.findOne({ email });
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -77,4 +81,5 @@ module.exports = {
   updateSubscription,
   updateAvatar,
   verifyToken,
+  sendToken,
 };

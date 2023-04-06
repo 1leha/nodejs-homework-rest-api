@@ -39,6 +39,20 @@ const validatedUserOnLogin = async (req, res, next) => {
   next();
 };
 
+const validatedUserOnTokenSending = async (req, res, next) => {
+  const { error, value } = Joi.object({
+    email: Joi.string().email().required(),
+  }).validate(req.body);
+
+  if (error) {
+    const errorField = error.details[0].context.key;
+    return next(new BadRequestError(`Missing required ${errorField} field!`));
+  }
+
+  req.body = value;
+  next();
+};
+
 const validatedUsersSubscription = async (req, res, next) => {
   const { error, value } = Joi.object({
     subscription: Joi.string().valid("starter", "pro", "business"),
@@ -60,4 +74,5 @@ module.exports = {
   validatedUserOnRegister,
   validatedUserOnLogin,
   validatedUsersSubscription,
+  validatedUserOnTokenSending,
 };

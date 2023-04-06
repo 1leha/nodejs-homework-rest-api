@@ -6,15 +6,16 @@ const {
   updateSubscription,
   updateAvatar,
   verifyToken,
+  sendToken,
 } = require("../models/users");
 
 require("dotenv").config();
 
 const ImagesAPI = require("../sevices/imageUpload");
 const { asynWrapper } = require("../utils/asyncWrapper");
-const { NotFound } = require("../utils/errors");
+const { NotFound, BadRequestError } = require("../utils/errors");
 const MailAPI = require("../utils/MailAPI");
-const { EMAIL_SENDER } = process.env;
+const { EMAIL_SENDER, HOST, PORT, VERIFY_ROUTE } = process.env;
 
 const registerController = asynWrapper(async (req, res) => {
   const {
@@ -38,12 +39,11 @@ const registerController = asynWrapper(async (req, res) => {
   const mail = {
     to: email,
     from: EMAIL_SENDER,
-    subject: "E-mail conformation letter",
-    html: `<a href="http://localhost:3030/users/verify/${newUser.verificationToken}">Click to confirm Your e-mail</a>`,
+    subject: "E-mail confirmation letter",
+    html: `<a href="${HOST}:${PORT}${VERIFY_ROUTE}/${newUser.verificationToken}">Click to confirm Your e-mail</a>`,
   };
 
-  const mailSentResult = MailAPI.send(mail);
-  console.log("mailSentResult :>> ", mailSentResult);
+  await MailAPI.send(mail);
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -122,6 +122,33 @@ const verifyTokenController = asynWrapper(async (req, res) => {
   });
 });
 
+const sendVerificationTokenController = asynWrapper(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await sendToken(email);
+
+  if (!user) {
+    throw new NotFound("User not found");
+  }
+
+  if (user.verify) {
+    throw new BadRequestError("Verification has already been passed");
+  }
+
+  const mail = {
+    to: email,
+    from: EMAIL_SENDER,
+    subject: "E-mail confirmation letter",
+    html: `<a target="_blank" href="${HOST}:${PORT}${VERIFY_ROUTE}/${user.verificationToken}">Click to confirm Your e-mail</a>`,
+  };
+
+  await MailAPI.send(mail);
+
+  res.status(200).json({
+    message: "Verification email sent",
+  });
+});
+
 module.exports = {
   registerController,
   loginController,
@@ -130,4 +157,5 @@ module.exports = {
   updateUsersSubscriptionController,
   updateUserAvatarController,
   verifyTokenController,
+  sendVerificationTokenController,
 };
