@@ -15,7 +15,6 @@ const ImagesAPI = require("../sevices/imageUpload");
 const { asynWrapper } = require("../utils/asyncWrapper");
 const { NotFound, BadRequestError } = require("../utils/errors");
 const MailAPI = require("../utils/MailAPI");
-const { EMAIL_SENDER, HOST, PORT, VERIFY_ROUTE } = process.env;
 
 const registerController = asynWrapper(async (req, res) => {
   const {
@@ -36,14 +35,7 @@ const registerController = asynWrapper(async (req, res) => {
     verify
   );
 
-  const mail = {
-    to: email,
-    from: EMAIL_SENDER,
-    subject: "E-mail confirmation letter",
-    html: `<a href="${HOST}:${PORT}${VERIFY_ROUTE}/${newUser.verificationToken}">Click to confirm Your e-mail</a>`,
-  };
-
-  await MailAPI.send(mail);
+  await new MailAPI(newUser).sendVerifyToken();
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -135,14 +127,7 @@ const sendVerificationTokenController = asynWrapper(async (req, res) => {
     throw new BadRequestError("Verification has already been passed");
   }
 
-  const mail = {
-    to: email,
-    from: EMAIL_SENDER,
-    subject: "E-mail confirmation letter",
-    html: `<a target="_blank" href="${HOST}:${PORT}${VERIFY_ROUTE}/${user.verificationToken}">Click to confirm Your e-mail</a>`,
-  };
-
-  await MailAPI.send(mail);
+  await new MailAPI(user).sendVerifyToken();
 
   res.status(200).json({
     message: "Verification email sent",
