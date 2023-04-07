@@ -5,7 +5,7 @@ const { SENDGRID_API_KEY, EMAIL_SENDER, HOST, PORT, VERIFY_ROUTE } =
   process.env;
 sgMail.setApiKey(SENDGRID_API_KEY);
 
-module.exports = class MailAPI {
+class MailAPI {
   constructor(user) {
     console.log("user :>> ", user);
     this.to = user.email;
@@ -37,4 +37,6 @@ module.exports = class MailAPI {
 
     await this.send(mailBody);
   }
-};
+}
+
+module.exports = MailAPI;

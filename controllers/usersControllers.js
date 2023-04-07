@@ -12,9 +12,9 @@ const {
 require("dotenv").config();
 
 const ImagesAPI = require("../sevices/imageUpload");
+const MailAPI = require("../utils/mailAPI");
 const { asynWrapper } = require("../utils/asyncWrapper");
 const { NotFound, BadRequestError } = require("../utils/errors");
-const MailAPI = require("../utils/MailAPI");
 
 const registerController = asynWrapper(async (req, res) => {
   const {
