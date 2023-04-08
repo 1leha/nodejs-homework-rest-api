@@ -19,7 +19,7 @@ const validatedUserOnRegister = async (req, res, next) => {
   if (isUserExist) {
     return next(new EmailInUseError("Email in use"));
   }
-
+  console.log("value :>> ", value);
   req.body = value;
   next();
 };
@@ -28,6 +28,20 @@ const validatedUserOnLogin = async (req, res, next) => {
   const { error, value } = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().required(),
+  }).validate(req.body);
+
+  if (error) {
+    const errorField = error.details[0].context.key;
+    return next(new BadRequestError(`Missing required ${errorField} field!`));
+  }
+
+  req.body = value;
+  next();
+};
+
+const validatedUserOnTokenSending = async (req, res, next) => {
+  const { error, value } = Joi.object({
+    email: Joi.string().email().required(),
   }).validate(req.body);
 
   if (error) {
@@ -60,4 +74,5 @@ module.exports = {
   validatedUserOnRegister,
   validatedUserOnLogin,
   validatedUsersSubscription,
+  validatedUserOnTokenSending,
 };

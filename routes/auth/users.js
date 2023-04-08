@@ -8,6 +8,8 @@ const {
   getCurrentUserController,
   updateUsersSubscriptionController,
   updateUserAvatarController,
+  verifyTokenController,
+  sendVerificationTokenController,
 } = require("../../controllers/usersControllers");
 const { authMiddlware } = require("../../middlewares/authMiddleware");
 const { uploadAvatar } = require("../../middlewares/uploadAvatar");
@@ -16,6 +18,7 @@ const {
   validatedUserOnRegister,
   validatedUserOnLogin,
   validatedUsersSubscription,
+  validatedUserOnTokenSending,
 } = require("../../middlewares/validateUser");
 
 router.post("/users/register", validatedUserOnRegister, registerController);
@@ -33,6 +36,14 @@ router.patch(
   authMiddlware,
   uploadAvatar,
   updateUserAvatarController
+);
+
+// verify mail
+router.get("/users/verify/:verificationToken", verifyTokenController);
+router.post(
+  "/users/verify",
+  validatedUserOnTokenSending,
+  sendVerificationTokenController
 );
 
 module.exports = router;

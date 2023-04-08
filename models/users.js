@@ -26,6 +26,12 @@ const loginUser = async (email, password) => {
     throw new NotAuthorisedError("Email or password is wrong");
   }
 
+  if (!user.verify) {
+    throw new NotAuthorisedError(
+      "You are not authorized to login this site! Check your e-mail and follow the link to complete your registration!"
+    );
+  }
+
   const token = signToken(user._id);
 
   return await User.findByIdAndUpdate(
@@ -52,8 +58,19 @@ const updateSubscription = async (id, subscription) => {
 };
 
 const updateAvatar = async (id, avatarURL) => {
-  console.log("id :>> ", id);
   return await User.findByIdAndUpdate(id, { avatarURL }, { new: true });
+};
+
+const verifyToken = async (token) => {
+  return await User.findOneAndUpdate(
+    { verificationToken: token },
+    { verificationToken: null, verify: true },
+    { new: true }
+  );
+};
+
+const sendToken = async (email) => {
+  return await User.findOne({ email });
 };
 
 module.exports = {
@@ -63,4 +80,6 @@ module.exports = {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  verifyToken,
+  sendToken,
 };

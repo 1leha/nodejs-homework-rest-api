@@ -18,6 +18,12 @@ class NotAuthorisedError extends Error {
     this.status = 401;
   }
 }
+class NotFound extends Error {
+  constructor(message) {
+    super(message);
+    this.status = 404;
+  }
+}
 
 class EmailInUseError extends Error {
   constructor(message) {
@@ -31,4 +37,5 @@ module.exports = {
   NotAuthorisedError,
   EmailInUseError,
   NotImageError,
+  NotFound,
 };

@@ -5,14 +5,37 @@ const {
   getCurrentUser,
   updateSubscription,
   updateAvatar,
+  verifyToken,
+  sendToken,
 } = require("../models/users");
+
+require("dotenv").config();
+
 const ImagesAPI = require("../sevices/imageUpload");
+const MailAPI = require("../utils/mailAPI");
 const { asynWrapper } = require("../utils/asyncWrapper");
+const { NotFound, BadRequestError } = require("../utils/errors");
 
 const registerController = asynWrapper(async (req, res) => {
-  const { email, password, subscription, avatarURL } = req.body;
+  const {
+    email,
+    password,
+    subscription,
+    avatarURL,
+    verificationToken,
+    verify,
+  } = req.body;
 
-  const newUser = await registerUser(email, password, subscription, avatarURL);
+  const newUser = await registerUser(
+    email,
+    password,
+    subscription,
+    avatarURL,
+    verificationToken,
+    verify
+  );
+
+  await new MailAPI(newUser).sendVerifyToken();
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -77,6 +100,40 @@ const updateUserAvatarController = asynWrapper(async (req, res) => {
   });
 });
 
+const verifyTokenController = asynWrapper(async (req, res) => {
+  const { verificationToken } = req.params;
+
+  const verificationResult = await verifyToken(verificationToken);
+
+  if (!verificationResult) {
+    throw new NotFound("User not found");
+  }
+
+  res.status(200).json({
+    message: "Verification successful",
+  });
+});
+
+const sendVerificationTokenController = asynWrapper(async (req, res) => {
+  const { email } = req.body;
+
+  const user = await sendToken(email);
+
+  if (!user) {
+    throw new NotFound("User not found");
+  }
+
+  if (user.verify) {
+    throw new BadRequestError("Verification has already been passed");
+  }
+
+  await new MailAPI(user).sendVerifyToken();
+
+  res.status(200).json({
+    message: "Verification email sent",
+  });
+});
+
 module.exports = {
   registerController,
   loginController,
@@ -84,4 +141,6 @@ module.exports = {
   getCurrentUserController,
   updateUsersSubscriptionController,
   updateUserAvatarController,
+  verifyTokenController,
+  sendVerificationTokenController,
 };
